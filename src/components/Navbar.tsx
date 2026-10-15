@@ -20,11 +20,12 @@ export default function Navbar() {
     }, 50);
   };
 
-  const NAV_LINKS = [
+  const NAV_LINKS: { label: string; id: string; booking?: boolean }[] = [
     { label: "Why Royalty", id: "why-royalty" },
     { label: "Reviews", id: "reviews" },
     { label: "Our Team", id: "team" },
-    { label: "Get Estimate", id: "bottom-form" },
+    // Opens the booking popup instead of scrolling.
+    { label: "Get Estimate", id: "bottom-form", booking: true },
   ];
 
   return (
@@ -77,10 +78,12 @@ export default function Navbar() {
 
         {/* Center nav links - desktop only */}
         <div className="hidden lg:flex" style={{ alignItems: "center", gap: "4px" }}>
-          {NAV_LINKS.map(({ label, id }) => (
+          {NAV_LINKS.map(({ label, id, booking }) => (
             <button
               key={id}
-              onClick={() => scrollTo(id)}
+              type="button"
+              data-royalty-booking-open={booking ? "" : undefined}
+              onClick={() => (booking ? setMenuOpen(false) : scrollTo(id))}
               style={{
                 background: "none",
                 border: "none",
@@ -154,7 +157,8 @@ export default function Navbar() {
 
           {/* CTA button — desktop only */}
           <button
-            onClick={() => scrollTo("bottom-form")}
+            type="button"
+            data-royalty-booking-open
             className="hidden lg:block"
             style={{
               background: "#3D6CC0",
@@ -219,10 +223,12 @@ export default function Navbar() {
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
           }}
         >
-          {NAV_LINKS.map(({ label, id }) => (
+          {NAV_LINKS.map(({ label, id, booking }) => (
             <button
               key={id}
-              onClick={() => scrollTo(id)}
+              type="button"
+              data-royalty-booking-open={booking ? "" : undefined}
+              onClick={() => (booking ? setMenuOpen(false) : scrollTo(id))}
               style={{
                 background: "none",
                 border: "none",
@@ -264,7 +270,9 @@ export default function Navbar() {
             Call (402) 216-8850
           </a>
           <button
-            onClick={() => scrollTo("bottom-form")}
+            type="button"
+            data-royalty-booking-open
+            onClick={() => setMenuOpen(false)}
             style={{
               marginTop: "8px",
               background: "#3D6CC0",

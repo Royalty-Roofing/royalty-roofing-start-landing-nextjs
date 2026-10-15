@@ -1,11 +1,9 @@
 /**
  * tracking.ts — single source of truth for lead conversion tracking.
  *
- * Two responsibilities:
- *  1. Push a `generate_lead` event to dataLayer/gtag (method: "form" | "call" | "text")
- *  2. POST the lead to our CRM webhook so Sales gets it in real time.
- *
- * Point `CRM_WEBHOOK_URL` at your endpoint (or set NEXT_PUBLIC_CRM_WEBHOOK_URL).
+ * Push a `generate_lead` event to dataLayer/gtag (method: "form" | "call" | "text")
+ * and fire the Google Ads conversions. Leads themselves are sent to GHL by the
+ * Royalty booking widget (components/royalty-booking.tsx).
  */
 
 export type LeadMethod = "form" | "call" | "text";
@@ -39,8 +37,8 @@ export function reportCallConversion(): boolean {
 /**
  * Fire the Google Ads "Submit lead form" conversion (value 1.0 USD). The form
  * shows an inline success state, so no redirect callback is needed.
- * Idempotency is enforced by the caller (fires exactly once per successful
- * submit) — see EstimateForm's `conversionFired` ref.
+ * Idempotency is enforced by the caller (fires exactly once per lead) — see
+ * LeadTracking's "royalty-booking:info" listener.
  */
 export function reportAdsConversion(): boolean {
   if (typeof window === "undefined") return false;
@@ -55,12 +53,6 @@ export function reportAdsConversion(): boolean {
   });
   return false;
 }
-
-// TODO: Replace with your CRM/webhook endpoint (or set NEXT_PUBLIC_CRM_WEBHOOK_URL in project env vars).
-const CRM_WEBHOOK_URL =
-  process.env.NEXT_PUBLIC_CRM_WEBHOOK_URL ||
-  process.env.NEXT_PUBLIC_FORM_WEBHOOK_URL ||
-  "";
 
 /**
  * Fire the analytics conversion event. Safe to call on the client only.
@@ -79,26 +71,5 @@ export function trackLead(method: LeadMethod, extra?: Record<string, unknown>) {
 
   if (typeof w.gtag === "function") {
     w.gtag("event", "generate_lead", { method, ...extra });
-  }
-}
-
-/**
- * POST a lead to the CRM webhook. Returns true on a successful send.
- * Never throws — callers can fire-and-forget.
- */
-export async function postLeadToCRM(
-  payload: Record<string, unknown>
-): Promise<boolean> {
-  if (!CRM_WEBHOOK_URL) return false;
-  try {
-    const res = await fetch(CRM_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...payload, submittedAt: new Date().toISOString() }),
-      keepalive: true,
-    });
-    return res.ok;
-  } catch {
-    return false;
   }
 }

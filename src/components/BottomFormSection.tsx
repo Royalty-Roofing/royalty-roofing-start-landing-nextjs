@@ -6,7 +6,7 @@
  * - Large phone number, trust checklist, form card
  * - No gold
  */
-import EstimateForm from "./EstimateForm";
+import { RoyaltyBookingForm } from "./royalty-booking";
 
 export default function BottomFormSection() {
   return (
@@ -116,7 +116,7 @@ export default function BottomFormSection() {
 
         {/* RIGHT: Form */}
         <div>
-          <EstimateForm variant="glass" />
+          <RoyaltyBookingForm />
         </div>
       </div>
 

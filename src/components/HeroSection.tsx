@@ -6,7 +6,7 @@
  * instant-painting LCP element — mobile LCP < 2.5s, no layout shift.
  * BBB logo: /images/OvrIKRhrXjOUvBsh.webp
  */
-import EstimateForm from "./EstimateForm";
+import { RoyaltyBookingForm } from "./royalty-booking";
 
   const BBB_LOGO = "/images/OvrIKRhrXjOUvBsh.webp";
 
@@ -196,7 +196,7 @@ export default function HeroSection() {
 
         {/* RIGHT: Form + insurance/honesty trust bullets directly underneath */}
         <div style={{ gridArea: "form", paddingBottom: "8px" }} className="hero-form-col">
-          <EstimateForm variant="glass" />
+          <RoyaltyBookingForm />
 
           <ul
             style={{

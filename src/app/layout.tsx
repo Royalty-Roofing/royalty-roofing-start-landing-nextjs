@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Bebas_Neue, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { RoyaltyBookingScript } from "@/components/royalty-booking";
 
 // Self-hosted, preloaded fonts with display:swap — removes the render-blocking
 // Google Fonts <link> from <head> so the H1 (LCP) text paints instantly on the
@@ -131,6 +132,8 @@ gtag('config', 'AW-931355603/JUMmCLPWodQcENO3jbwD', { 'phone_conversion_number':
       </head>
       <body>
         {children}
+        {/* launcher off: the sticky mobile bar already opens the booking popup, and the corner button would cover it */}
+        <RoyaltyBookingScript siteType="Landing Page" siteName="Start Landing Page" launcher={false} />
         {ANALYTICS_ENDPOINT && ANALYTICS_WEBSITE_ID && (
           <Script
             defer

@@ -138,6 +138,7 @@ export default function HonestAssessmentSection() {
             {/* CTA — anchor + native smooth scroll (zero JS) */}
             <a
               href="#bottom-form"
+              data-royalty-booking-open
               className="why-cta"
               style={{
                 display: "inline-block",

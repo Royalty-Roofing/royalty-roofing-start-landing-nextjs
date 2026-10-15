@@ -5,9 +5,12 @@
  * any tel: or sms: link anywhere on the page, firing a `generate_lead` event
  * with the correct method ("call" or "text"). This keeps every phone/text link
  * tracked without wiring onClick into each component.
+ *
+ * It also listens for the booking widget's "royalty-booking:info" event (a lead
+ * was submitted) and fires the form conversions once per lead.
  */
 import { useEffect } from "react";
-import { trackLead, reportCallConversion } from "@/lib/tracking";
+import { trackLead, reportCallConversion, reportAdsConversion } from "@/lib/tracking";
 
 export default function LeadTracking() {
   useEffect(() => {
@@ -24,7 +27,24 @@ export default function LeadTracking() {
       if (method === "call") reportCallConversion();
     };
     document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
+
+    // Booking widget lead: fire the GA4/GTM lead event and the Google Ads
+    // "Submit lead form" conversion exactly once per lead.
+    const counted = new Set<string>();
+    const onLead = (e: Event) => {
+      const d = ((e as CustomEvent).detail || {}) as Record<string, unknown>;
+      const key = String(d.phone || d.email || "lead");
+      if (counted.has(key)) return;
+      counted.add(key);
+      trackLead("form", { form_type: "roofing_estimate" });
+      reportAdsConversion();
+    };
+    window.addEventListener("royalty-booking:info", onLead);
+
+    return () => {
+      document.removeEventListener("click", handler);
+      window.removeEventListener("royalty-booking:info", onLead);
+    };
   }, []);
 
   return null;

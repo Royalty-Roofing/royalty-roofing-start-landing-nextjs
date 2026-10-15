@@ -2,21 +2,12 @@
 
 /**
  * StickyMobileCTA — Fixed bottom bar on mobile only
- * Buttons: Call Now (tel:) + Text (sms:) + Get Free Estimate (scrolls to form)
+ * Buttons: Call Now (tel:) + Text (sms:) + Get Free Estimate (opens the booking popup)
  * - Stays fixed on scroll; all tap targets ≥ 48px
  * - The form sections carry extra bottom padding so this bar never covers the submit button
  * Hidden on lg+ screens
  */
 export default function StickyMobileCTA() {
-  const scrollToForm = () => {
-    const el = document.getElementById("bottom-form");
-    el?.scrollIntoView({ behavior: "smooth" });
-    // Move focus to the first field for accessibility + faster fills
-    setTimeout(() => {
-      (el?.querySelector("#firstName") as HTMLInputElement | null)?.focus();
-    }, 600);
-  };
-
   const iconBtn: React.CSSProperties = {
     flex: "0 0 auto",
     minWidth: "56px",
@@ -64,7 +55,8 @@ export default function StickyMobileCTA() {
         Text
       </a>
       <button
-        onClick={scrollToForm}
+        type="button"
+        data-royalty-booking-open
         style={{
           flex: 1,
           minHeight: "48px",
