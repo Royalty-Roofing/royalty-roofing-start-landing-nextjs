@@ -3,6 +3,8 @@ import Script from "next/script";
 import { Bebas_Neue, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { RoyaltyBookingScript } from "@/components/royalty-booking";
+import { GoogleTagManagerHead, GoogleTagManagerNoScript } from "@/components/google-tag-manager";
+import GtmEvents from "@/components/gtm-events";
 
 // Self-hosted, preloaded fonts with display:swap — removes the render-blocking
 // Google Fonts <link> from <head> so the H1 (LCP) text paints instantly on the
@@ -96,13 +98,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`bg-background ${bebasNeue.variable} ${dmSans.variable}`}>
       <head>
+        <GoogleTagManagerHead />
         {/* Fonts are self-hosted via next/font (see top of file) — no external,
             render-blocking stylesheet request. */}
 
         {/* Resource hints: warm up the connection to Google's tag/measurement
-            domains so GTM, gtag, GA4, and the Google Ads conversion tag connect
-            faster once they load. dns-prefetch is the fallback for browsers that
-            ignore preconnect. */}
+            domains so GTM and the tags it loads connect faster. dns-prefetch is
+            the fallback for browsers that ignore preconnect. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
@@ -113,25 +115,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_JSONLD) }}
         />
-
-        {/* Google tag (gtag.js) — single library load handles both GA4 + Google
-            Ads IDs. lazyOnload so it loads during idle without adding to the
-            initial main-thread work. */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-B0V4J1CX44"
-          strategy="lazyOnload"
-        />
-        <Script id="gtag-config" strategy="lazyOnload">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-B0V4J1CX44');
-gtag('config', 'AW-931355603');
-gtag('config', 'AW-931355603/JUMmCLPWodQcENO3jbwD', { 'phone_conversion_number': '(402) 216-8850' });`}
-        </Script>
       </head>
       <body>
+        <GoogleTagManagerNoScript />
         {children}
+        <GtmEvents />
         {/* launcher off: the sticky mobile bar already opens the booking popup, and the corner button would cover it */}
         <RoyaltyBookingScript siteType="Landing Page" siteName="Start Landing Page" launcher={false} />
         {ANALYTICS_ENDPOINT && ANALYTICS_WEBSITE_ID && (
