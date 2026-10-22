@@ -2,6 +2,8 @@
  * Footer — 3-column: logo+tagline, services, contact
  * White background, color logo, dark text
  */
+import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/phone";
+
 export default function Footer() {
   const services = [
     "Roof Repair",
@@ -91,7 +93,7 @@ export default function Footer() {
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <a
-                href="tel:4022168850"
+                href={PHONE_HREF}
                 className="footer-link-dark"
                 style={{
                   color: "#0A1220",
@@ -102,7 +104,7 @@ export default function Footer() {
                   transition: "color 0.15s",
                 }}
               >
-                (402) 216-8850
+                {PHONE_DISPLAY}
               </a>
               <a
                 href="mailto:info@royaltyroofing.org"
